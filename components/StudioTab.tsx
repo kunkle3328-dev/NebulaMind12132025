@@ -36,21 +36,23 @@ const ArtifactRenderer: React.FC<{ artifact: Artifact }> = ({ artifact }) => {
     if (artifact.type === 'flashcards' && data.cards) {
         const card = data.cards[index];
         return (
-            <div className="flex flex-col items-center h-full max-w-2xl mx-auto">
+            <div className="flex flex-col items-center h-full w-full max-w-2xl mx-auto px-4">
                 <div 
-                    className="w-full h-80 perspective-1000 cursor-pointer mb-6"
+                    className="w-full h-64 md:h-96 perspective-1000 cursor-pointer mb-6"
                     onClick={() => setFlipped(!flipped)}
                 >
                     <div className={`relative w-full h-full duration-500 preserve-3d transition-transform ${flipped ? 'rotate-y-180' : ''}`}>
                         {/* Front */}
-                        <div className={`absolute inset-0 backface-hidden p-8 rounded-3xl bg-${theme.colors.primary}-900/20 border border-${theme.colors.primary}-500/30 flex flex-col items-center justify-center text-center shadow-xl`}>
+                        <div className={`absolute inset-0 backface-hidden p-6 md:p-8 rounded-3xl bg-${theme.colors.primary}-900/20 border border-${theme.colors.primary}-500/30 flex flex-col items-center justify-center text-center shadow-xl`}>
                             <span className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-4">{card.tag || 'Term'}</span>
-                            <h3 className="text-2xl md:text-3xl font-bold text-white">{card.front}</h3>
+                            <h3 className="text-xl md:text-3xl font-bold text-white overflow-y-auto max-h-[70%] custom-scrollbar">{card.front}</h3>
                             <p className="absolute bottom-6 text-xs text-slate-400">Click to flip</p>
                         </div>
                         {/* Back */}
-                        <div className={`absolute inset-0 backface-hidden rotate-y-180 p-8 rounded-3xl bg-slate-800 border border-slate-700 flex flex-col items-center justify-center text-center shadow-xl`}>
-                            <p className="text-lg md:text-xl text-slate-200 leading-relaxed">{card.back}</p>
+                        <div className={`absolute inset-0 backface-hidden rotate-y-180 p-6 md:p-8 rounded-3xl bg-slate-800 border border-slate-700 flex flex-col items-center justify-center text-center shadow-xl`}>
+                            <div className="overflow-y-auto max-h-full custom-scrollbar w-full">
+                                <p className="text-base md:text-xl text-slate-200 leading-relaxed">{card.back}</p>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -65,27 +67,25 @@ const ArtifactRenderer: React.FC<{ artifact: Artifact }> = ({ artifact }) => {
 
     // 2. QUIZ
     if (artifact.type === 'quiz' && data.questions) {
-         // Re-using index for current question
          const q = data.questions[index];
          const [selected, setSelected] = useState<number | null>(null);
          const [showAnswer, setShowAnswer] = useState(false);
 
-         // Reset state on question change
          useEffect(() => { setSelected(null); setShowAnswer(false); }, [index]);
 
          return (
-             <div className="max-w-2xl mx-auto h-full flex flex-col">
+             <div className="max-w-2xl mx-auto h-full flex flex-col px-4">
                  <div className="mb-6">
                     <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Question {index + 1} of {data.questions.length}</span>
-                    <h3 className="text-xl md:text-2xl font-bold text-white mt-2">{q.question}</h3>
+                    <h3 className="text-lg md:text-2xl font-bold text-white mt-2 leading-snug">{q.question}</h3>
                  </div>
-                 <div className="space-y-3 mb-6">
+                 <div className="space-y-3 mb-6 flex-1 overflow-y-auto custom-scrollbar">
                     {q.options.map((opt: string, i: number) => (
                         <button
                             key={i}
                             onClick={() => setSelected(i)}
                             disabled={showAnswer}
-                            className={`w-full p-4 rounded-xl text-left border transition-all ${
+                            className={`w-full p-4 rounded-xl text-left border transition-all text-sm md:text-base ${
                                 showAnswer 
                                 ? (i === q.correctAnswerIndex ? 'bg-green-500/20 border-green-500 text-green-100' : (selected === i ? 'bg-red-500/20 border-red-500 text-red-100' : 'bg-slate-900 border-slate-800 text-slate-500'))
                                 : (selected === i ? `bg-${theme.colors.primary}-600 border-${theme.colors.primary}-500 text-white` : 'bg-slate-900 border-slate-800 text-slate-300 hover:bg-slate-800')
@@ -101,7 +101,7 @@ const ArtifactRenderer: React.FC<{ artifact: Artifact }> = ({ artifact }) => {
                          <p className="text-sm text-slate-300"><span className="font-bold text-white">Explanation:</span> {q.explanation}</p>
                      </div>
                  )}
-                 <div className="mt-auto flex justify-between">
+                 <div className="mt-auto flex justify-between pt-4 border-t border-white/5">
                      {!showAnswer ? (
                          <button onClick={() => setShowAnswer(true)} disabled={selected === null} className="px-6 py-2 bg-white text-black font-bold rounded-lg disabled:opacity-50">Check Answer</button>
                      ) : (
@@ -116,19 +116,19 @@ const ArtifactRenderer: React.FC<{ artifact: Artifact }> = ({ artifact }) => {
     if (artifact.type === 'slideDeck' && data.slides) {
         const slide = data.slides[index];
         return (
-            <div className="h-full flex flex-col">
-                <div className="flex-1 bg-white text-black p-8 md:p-16 rounded-xl shadow-2xl overflow-y-auto mb-6 relative">
+            <div className="h-full flex flex-col px-2 md:px-8">
+                <div className="flex-1 bg-white text-black p-6 md:p-12 rounded-xl shadow-2xl overflow-y-auto mb-6 relative min-h-[400px]">
                     <div className={`absolute top-0 left-0 w-full h-2 bg-${theme.colors.primary}-600`}></div>
-                    <h2 className="text-3xl md:text-4xl font-bold mb-8">{slide.slideTitle}</h2>
-                    <ul className="space-y-4">
+                    <h2 className="text-2xl md:text-4xl font-bold mb-6 md:mb-8 leading-tight">{slide.slideTitle}</h2>
+                    <ul className="space-y-3 md:space-y-4">
                         {slide.bullets?.map((b: string, i: number) => (
-                            <li key={i} className="text-lg md:text-xl flex items-start gap-3">
+                            <li key={i} className="text-base md:text-xl flex items-start gap-3">
                                 <span className={`mt-2 w-2 h-2 rounded-full bg-${theme.colors.primary}-600 shrink-0`}></span>
                                 {b}
                             </li>
                         ))}
                     </ul>
-                    <div className="mt-12 pt-8 border-t border-gray-200 text-sm text-gray-500 font-mono">
+                    <div className="mt-8 md:mt-12 pt-6 md:pt-8 border-t border-gray-200 text-xs md:text-sm text-gray-500 font-mono">
                         SPEAKER NOTES: {slide.speakerNotes}
                     </div>
                 </div>
@@ -141,11 +141,11 @@ const ArtifactRenderer: React.FC<{ artifact: Artifact }> = ({ artifact }) => {
         );
     }
 
-    // 4. LIST BASED (Roadmap, SWOT, Brief) - Generic Responsive Render
+    // 4. LIST BASED (Roadmap, SWOT, Brief)
     return (
-        <div className="max-w-3xl mx-auto h-full overflow-y-auto custom-scrollbar p-1">
+        <div className="max-w-3xl mx-auto h-full overflow-y-auto custom-scrollbar p-1 px-4">
             {Object.entries(data).map(([key, value]) => {
-                if (key === 'title' || key === 'briefTitle') return <h2 key={key} className="text-3xl font-bold text-white mb-6">{value as string}</h2>;
+                if (key === 'title' || key === 'briefTitle') return <h2 key={key} className="text-2xl md:text-3xl font-bold text-white mb-6 leading-tight">{value as string}</h2>;
                 if (typeof value === 'string') return <p key={key} className="text-slate-300 mb-6 leading-relaxed bg-slate-900/50 p-4 rounded-xl border border-white/5">{value}</p>;
                 if (Array.isArray(value)) {
                     return (
@@ -155,10 +155,10 @@ const ArtifactRenderer: React.FC<{ artifact: Artifact }> = ({ artifact }) => {
                                 {value.map((item: any, i: number) => {
                                     if (typeof item === 'string') return <div key={i} className="p-3 bg-slate-800/50 rounded-lg border border-white/5 text-slate-200">{item}</div>;
                                     return (
-                                        <div key={i} className="p-4 bg-slate-900 rounded-xl border border-white/10">
+                                        <div key={i} className="p-4 bg-slate-900 rounded-xl border border-white/10 shadow-sm">
                                             {Object.entries(item).map(([k, v]) => (
-                                                <div key={k} className="mb-1">
-                                                    <span className="text-xs text-slate-500 uppercase font-bold mr-2">{k}:</span>
+                                                <div key={k} className="mb-1 last:mb-0">
+                                                    <span className="text-xs text-slate-500 uppercase font-bold mr-2 block md:inline">{k}:</span>
                                                     <span className="text-slate-200">{String(v)}</span>
                                                 </div>
                                             ))}
@@ -340,7 +340,6 @@ const StudioTab: React.FC<Props> = ({ notebook, onUpdate }) => {
     if (!audioContent || isSynthesizing || !audioArtifact) return;
     setIsSynthesizing(true);
     try {
-        // Pass the stored voice config if available, or undefined to use defaults
         const result = await synthesizeDialogueAudio(audioContent, (audioContent as any).voiceConfig);
         const updatedArtifact: Artifact = {
             ...audioArtifact,
@@ -490,7 +489,7 @@ const StudioTab: React.FC<Props> = ({ notebook, onUpdate }) => {
                                         
                                         {/* Title & Metadata */}
                                         <div className="text-center z-20 px-4 w-full max-w-md mx-auto flex flex-col gap-2 mb-8">
-                                            <h2 className="text-2xl md:text-3xl font-bold text-white leading-tight drop-shadow-xl line-clamp-2">{title || "Audio Overview"}</h2>
+                                            <h2 className="text-2xl md:text-3xl font-bold text-white leading-tight drop-shadow-xl">{title || "Audio Overview"}</h2>
                                             <p className="text-sm text-slate-400 font-medium tracking-wide uppercase">AI Generated • {notebook.title}</p>
                                         </div>
 
