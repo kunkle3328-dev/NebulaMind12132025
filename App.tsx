@@ -292,13 +292,13 @@ const Dashboard: React.FC = () => {
   };
 
   return (
-    <div className={`min-h-screen p-4 md:p-8 relative z-10`}>
+    <div className={`min-h-screen p-4 md:p-8 relative z-10 flex flex-col`}>
       <header className="flex justify-between items-center mb-10 md:mb-16 relative z-50">
         <NebulaLogo size="lg" />
         <ThemeSelector />
       </header>
 
-      <div className="max-w-6xl mx-auto relative z-10 pb-20">
+      <div className="max-w-6xl mx-auto relative z-10 pb-20 w-full flex-1">
         <div className="flex justify-between items-end mb-8">
           <h2 className="text-xl text-slate-300 font-light tracking-wide">Your Research Space</h2>
         </div>
@@ -359,6 +359,11 @@ const Dashboard: React.FC = () => {
             ))}
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="w-full text-center py-6 text-slate-500 text-[10px] uppercase tracking-widest font-bold opacity-50 hover:opacity-100 transition-opacity relative z-10">
+        &copy; 2025 Created by Corey Dean
+      </footer>
 
       {/* Create Modal */}
       {showCreateModal && (
